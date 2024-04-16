@@ -1,14 +1,12 @@
----
 ################################################################################
 #
-#   Section: Organizations
+#   SECTION: Organizations
 #
 #   - This section defines the different organizational identities which will
 #   be referenced later in the configuration.
 #
 ################################################################################
 Organizations:
-
     - &OrdererOrg
         Name: OrdererOrg
         ID: OrdererMSP
@@ -164,28 +162,6 @@ Application: &ApplicationDefaults
 
 ################################################################################
 #
-#   Profile
-#
-#   - Different configuration profiles may be encoded here to be specified
-#   as parameters to the configtxgen tool
-#
-################################################################################
-Profiles:
-
-    FourOrgsOrdererGenesis:
-        <<: *ChannelDefaults
-        Orderer:
-            <<: *OrdererDefaults
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *HospitalsOrg
-                    - *PatientsOrg
-                    - *LabsOrg
-                    - *InsuranceCompaniesOrg
-
-################################################################################
-#
 #   SECTION: Orderer
 #
 #   - This section defines the values to encode into a config transaction or
@@ -239,4 +215,28 @@ Channel: &ChannelDefaults
     Capabilities:
         <<: *ChannelCapabilities
 
-
+################################################################################
+#
+#   Profile
+#
+#   - Different configuration profiles may be encoded here to be specified
+#   as parameters to the configtxgen tool
+#
+################################################################################
+Profiles:
+    FourOrgsOrdererGenesis:
+        Consortium: SampleConsortium
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *HospitalsOrg
+                - *PatientsOrg
+                - *LabsOrg
+                - *InsuranceCompaniesOrg
+            Capabilities:
+                <<: *ApplicationCapabilities

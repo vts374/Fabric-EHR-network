@@ -1,0 +1,29 @@
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/Hospitals.healthcare.kr/users/Admin@Hospitals.healthcare.kr/msp 
+CORE_PEER_ADDRESS=peer0.Hospitals.healthcare.kr:7051 
+CORE_PEER_LOCALMSPID="HospitalsMSP" 
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/Hospitals.healthcare.kr/peers/peer0.Hospitals.healthcare.kr/tls/ca.crt 
+
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/Patients.healthcare.kr/users/Admin@Patients.healthcare.kr/msp 
+CORE_PEER_ADDRESS=peer0.Patients.healthcare.kr:7051 
+CORE_PEER_LOCALMSPID="PatientsMSP" 
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/Patients.healthcare.kr/peers/peer0.Patients.healthcare.kr/tls/ca.crt 
+
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/Labs.healthcare.kr/users/Admin@Labs.healthcare.kr/msp 
+CORE_PEER_ADDRESS=peer0.Labs.healthcare.kr:7051 
+CORE_PEER_LOCALMSPID="LabsMSP" 
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/Labs.healthcare.kr/peers/peer0.Labs.healthcare.kr/tls/ca.crt 
+
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/InsuranceCompanies.healthcare.kr/users/Admin@InsuranceCompanies.healthcare.kr/msp 
+CORE_PEER_ADDRESS=peer0.InsuranceCompanies.healthcare.kr:7051 
+CORE_PEER_LOCALMSPID="InsuranceCompaniesMSP" 
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/InsuranceCompanies.healthcare.kr/peers/peer0.InsuranceCompanies.healthcare.kr/tls/ca.crt 
+
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/Hospitals.healthcare.kr/users/Admin@Hospitals.healthcare.kr/msp 
+CORE_PEER_ADDRESS=peer0.Hospitals.healthcare.kr:7051 
+CORE_PEER_LOCALMSPID="HospitalsMSP" 
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/Hospitals.healthcare.kr/peers/peer0.Hospitals.healthcare.kr/tls/ca.crt 
+
+export CHANNEL_NAME=ehrchannel
+
+
+peer channel create -o orderer.healthcare.kr:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/healthcare.kr/orderers/orderer.healthcare.kr/msp/tlscacerts/tlsca.healthcare.kr-cert.pem
