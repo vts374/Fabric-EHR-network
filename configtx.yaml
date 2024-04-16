@@ -1,0 +1,242 @@
+---
+################################################################################
+#
+#   Section: Organizations
+#
+#   - This section defines the different organizational identities which will
+#   be referenced later in the configuration.
+#
+################################################################################
+Organizations:
+
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/healthcare.kr/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+        OrdererEndpoints:
+            - orderer.example.com:7050
+
+    - &HospitalsOrg
+        Name: HospitalsMSP
+        ID: HospitalsMSP
+        MSPDir: crypto-config/peerOrganizations/Hospitals.healthcare.kr/msp
+        AnchorPeers:
+            - Host: peer0.Hospitals.healthcare.kr
+              Port: 7051
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('HospitalsMSP.admin', 'HospitalsMSP.peer', 'HospitalsMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('HospitalsMSP.admin', 'HospitalsMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('HospitalsMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('HospitalsMSP.peer')"
+
+    - &PatientsOrg
+        Name: PatientsMSP
+        ID: PatientsMSP
+        MSPDir: crypto-config/peerOrganizations/Patients.healthcare.kr/msp
+        AnchorPeers:
+            - Host: peer0.Patients.healthcare.kr
+              Port: 7051
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('PatientsMSP.admin', 'PatientsMSP.peer', 'PatientsMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('PatientsMSP.admin', 'PatientsMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('PatientsMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('PatientsMSP.peer')"
+
+    - &LabsOrg
+        Name: LabsMSP
+        ID: LabsMSP
+        MSPDir: crypto-config/peerOrganizations/Labs.healthcare.kr/msp
+        AnchorPeers:
+            - Host: peer0.Labs.healthcare.kr
+              Port: 7051
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('LabsMSP.admin', 'LabsMSP.peer', 'LabsMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('LabsMSP.admin', 'LabsMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('LabsMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('LabsMSP.peer')"
+
+    - &InsuranceCompaniesOrg
+        Name: InsuranceCompaniesMSP
+        ID: InsuranceCompaniesMSP
+        MSPDir: crypto-config/peerOrganizations/InsuranceCompanies.healthcare.kr/msp
+        AnchorPeers:
+            - Host: peer0.InsuranceCompanies.healthcare.kr
+              Port: 7051
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('InsuranceCompaniesMSP.admin', 'InsuranceCompaniesMSP.peer', 'InsuranceCompaniesMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('InsuranceCompaniesMSP.admin', 'InsuranceCompaniesMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('InsuranceCompaniesMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('InsuranceCompaniesMSP.peer')"
+
+################################################################################
+#
+#   SECTION: Capabilities
+#
+#   - This section defines the capabilities of fabric network. This is a new
+#   concept as of v1.1.0 and should not be utilized in mixed networks with
+#   v1.0.x peers and orderers.
+#
+################################################################################
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+
+    Orderer: &OrdererCapabilities
+        V2_0: true
+
+    Application: &ApplicationCapabilities
+        V2_0: true
+
+################################################################################
+#
+#   SECTION: Application
+#
+#   - This section defines the values to encode into a config transaction or
+#   genesis block for application related parameters
+#
+################################################################################
+Application: &ApplicationDefaults
+    Organizations:
+        - *HospitalsOrg
+        - *PatientsOrg
+        - *LabsOrg
+        - *InsuranceCompaniesOrg
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+################################################################################
+#
+#   Profile
+#
+#   - Different configuration profiles may be encoded here to be specified
+#   as parameters to the configtxgen tool
+#
+################################################################################
+Profiles:
+
+    FourOrgsOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *HospitalsOrg
+                    - *PatientsOrg
+                    - *LabsOrg
+                    - *InsuranceCompaniesOrg
+
+################################################################################
+#
+#   SECTION: Orderer
+#
+#   - This section defines the values to encode into a config transaction or
+#   genesis block for orderer related parameters
+#
+################################################################################
+Orderer: &OrdererDefaults
+    OrdererType: solo
+    Addresses:
+        - orderer.healthcare.kr:7050
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+        - *OrdererOrg
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+################################################################################
+#
+#   CHANNEL
+#
+#   This section defines the values to encode into a config transaction or
+#   genesis block for channel related parameters.
+#
+################################################################################
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+

@@ -1,0 +1,34 @@
+OrdererOrgs:
+  - Name: OrdererOrg
+    Domain: healthcare.kr
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs:
+  - Name: Hospitals
+    Domain: Hospitals.healthcare.kr
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Patients
+    Domain: Patients.healthcare.kr
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Labs
+    Domain: Labs.healthcare.kr
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: InsuranceCompanies
+    Domain: InsuranceCompanies.healthcare.kr
+    Template:
+      Count: 1
+    Users:
+      Count: 1
